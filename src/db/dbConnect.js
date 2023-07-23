@@ -1,7 +1,7 @@
 import { MongoClient } from "mongodb"
 import { MONGO_URI, MONGO_URI_DEV } from "$env/static/private"
 
-const client = new MongoClient(MONGO_URI_DEV)
+const client = new MongoClient(MONGO_URI)
 
 // connect to db
 export function startDB() {
