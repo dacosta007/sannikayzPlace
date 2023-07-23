@@ -1,4 +1,4 @@
-import { startDB } from "$db/dbConnection";
+import { startDB } from "$db/dbConnect";
 
 // start db server(runs ones: when server first loads)
 startDB().then(() => {

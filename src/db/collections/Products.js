@@ -1,4 +1,4 @@
-import { db } from "$db/dbConnection";
+import { db } from "$db/dbConnect";
 
 const Products = db.collection('products')
 

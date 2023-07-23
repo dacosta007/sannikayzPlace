@@ -1,0 +1,127 @@
+/* Google fonts */
+@import url("https://fonts.googleapis.com/css2?family=Barlow&family=Quicksand&display=swap");
+
+/* Fallback fonts */
+@font-face {
+  font-family: Montserrat;
+  src: url(../fonts/Montserrat.ttf);
+}
+
+@font-face {
+  font-family: Andika;
+  src: url(../fonts/AndikaNewBasic.ttf);
+}
+
+@font-face {
+  font-family: Barcode;
+  src: url(../fonts/LibreBarcode39.ttf);
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --clr-site: #abc270;
+  --clr-site-sec: #c09841;
+  --clr-sec: #fab133;
+  --clr-white: #ffffff;
+  --clr-white-sec: #e7eefb;
+  --clr-text: #111616;
+  --clr-text-sec: #25393a;
+  --clr-site-lite-pry: rgb(171 194 112 / 30%);
+  --clr-site-lite-sec: rgb(255 37 37 / 30%);
+  --clr-sec-lite: rgb(254 199 104 / 40%);
+  --clr-white-sec-lite: rgba(233 239 251 / 0.604);
+  --accent-info: #413fdf;
+  --accent-warning: #fab133;
+  --accent-danger: #832211;
+  --accent-success: #25ad25;
+  --font-andika: "Barlow", Andika, sans-serif;
+  --font-montserrat: "Quicksand", Montserrat, sans-serif;
+}
+
+html,
+body {
+  font-family: "Quicksand", Montserrat, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  background-color: var(--clr-white);
+  color: var(--clr-text);
+}
+
+.title {
+  font-family: "Barlow", Andika, sans-serif;
+}
+
+.section {
+  margin: 0 6.5rem;
+}
+
+.section:not(:last-of-type) {
+  margin-bottom: 2rem !important;
+}
+
+.input-field {
+  position: relative;
+}
+
+.input-field input, 
+.input-field select,
+.input-field textarea {
+  width: 100%;
+  padding: 14px 18px;
+  font-size: 14px;
+  outline: none;
+  appearance: none;
+  border: 2px solid rgb(254 199 104 / 48%);
+  border-radius: 6px;
+  transition: border-color 500ms ease;
+  background-color: transparent;
+}
+
+.input-field input:focus, 
+.input-field select:focus,
+.input-field textarea:focus {
+  border-color: var(--clr-sec);
+}
+
+/* Page scroll bar */
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--clr-white-sec);
+  border-radius: 5px;
+  transition: background-color 0.5s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #d1cdcd;
+}
+
+@keyframes clickBtn {
+  from {
+    transform: scale(0.9);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+/* Tablet Devices */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .section {
+    margin: 0 1.9rem;
+  }
+}
+
+/* Mobile Devices */
+@media (max-width: 500px) {
+  .section {
+    margin: 0 0.1rem;
+  }
+}
