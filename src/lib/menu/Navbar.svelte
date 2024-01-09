@@ -22,7 +22,7 @@
   <div class="nav-brand">
     <div>
       <div class="logo">sk</div> 
-      <div class="site-name"><span>sannikayz</span> <span>Kitchen</span></div>
+      <div class="site-name"><span>sannikayz</span> <span>Place</span></div>
     </div>
   </div>
 

@@ -1,99 +1,155 @@
 <script>
   import { formatCurrency } from "$lib/utilities/formatMoney";
   import { CartItemStore } from '$stores/CartItemStore';
+  import ItemList from "$lib/menu/cart/ItemList.svelte";
 
   export let checkoutInfo = {};
+  export let orderInfo = {}; // data from other components order than cart component
 
   /* for order placed date-time */
   function orderDateTime() {
+    let date, time;
+
+    if (orderInfo?._id != undefined) {
+      let orderDate = new Date(orderInfo?.date);
+      date = orderDate.toDateString();
+      time = orderDate.toLocaleTimeString()
+      return { date, time };
+    }
+
     const dt = new Date();
-    let date = dt.toDateString();
-    let time = dt.toLocaleTimeString();
+    date = dt.toDateString();
+    time = dt.toLocaleTimeString();
     return { date, time };
   }
 
+  // using component with other component provided data
+  if (orderInfo?._id != undefined) {
+    checkoutInfo = orderInfo;
+  }
+
   // total items added to cart
-  let totItems = $CartItemStore.reduce((acc, item) => acc + item.qty, 0);
+  let totItems = orderInfo?.orders === undefined ?  $CartItemStore.length : (orderInfo?.orders).length;
+
+  // total quantities added to cart
+  let totQty = orderInfo?.orders === undefined ? $CartItemStore.reduce((acc, item) => acc + item.qty, 0) : (orderInfo?.orders).reduce((acc, item) => acc + item.qty, 0);
 </script>
 
 <section class="ticket">
   <header class="ticket-header">
     <!-- site logo -->
     <div class="logo-sec">
-      <div class="logo">sk</div> 
-      <div class="site-name"><span>sannikayz</span> <span>Kitchen</span></div>
+      <!-- <div class="logo">sp</div> 
+      <div class="site-name"><span>sannikayz</span> <span>Place</span></div> -->
+      <div class="logo-cont">
+        <img src="/Ile-Iyan_logo.png" alt="site_logo" width="200" height="auto">
+      </div>
     </div>
     <!-- company's address -->
-    <div class="firm-address">6, Muiz Banires street, Lekki Phase 1</div>
+    <div class="firm-address">Plot 6, Muiz Banires street, Lekki Phase 1</div>
     <!-- company's contact email & phone -->
-    <small>sannikayzkitchen@gmail.com, +234 902 4475 402</small>
+    <small>ileiyan234@gmail.com, +234 902 4475 402</small>
   </header>
 
   <article class="ticket-body">
-    <h5>order info</h5>
-    <div class="order-info">
-      <!-- customer name & email -->
-      <div>
-        <span>{checkoutInfo.fname} {checkoutInfo.lname}</span>
-        <span>{checkoutInfo.email}</span>
+    <!-- a "paid watermark" (appears when payment is fully made) -->
+    {#if checkoutInfo.payStatus === 'paid'}
+      <div class="t-watermark-container">
+        <div class="watermark">
+          <img src="/imgs/paid_stamp.png" alt="paid_watermark" sizes="150" height="auto">
+        </div>
       </div>
-      <!-- order method -->
-      <div>
-        <span>order type</span> <span>{checkoutInfo.orderMthd}</span>
-      </div>
-      <!-- order status -->
-      <div>
-        <span>status</span> 
-        {#if checkoutInfo.paymentMthd != 'card'}
-          <span style="color: var(--accent-warning);">pending</span>
-        {:else}
-          <span style="color: var(--accent-success);">preparing</span>
-        {/if}
-      </div>
-      <!-- order id/invoice id -->
-      <div>
-        <span>order ID</span> <span>{checkoutInfo.orderId}</span>
-      </div>
-      <!-- date-time when order was placed -->
-      <div>
-        <span>date & time</span> <span>{orderDateTime().date} {orderDateTime().time}</span>
-      </div>
-    </div>
-
-    <!-- payment method -->
-    <div class="payment-method">
-      <span>payment method</span> <span>{checkoutInfo.paymentMthd}</span>
-    </div>
-
-    <div class="pay-details">
-      <!-- total items of food -->
-      <div>
-        <span>total items</span> <span>{totItems}</span>
-      </div>
-      <div>
-        <span>amount</span> <span>{formatCurrency(checkoutInfo.amount).currency}{formatCurrency(checkoutInfo.amount).price}</span>
-      </div>
-    </div>
-
-    <!-- caveat(only for cash/transfer pay method) -->
-    {#if checkoutInfo.paymentMthd != 'card'}
-      <p class="caveat">
-        order status is noted <b>pending</b> until payment is confirmed. Thereafter, 
-        you will be notified by a phone call or an email.
-      </p>
     {/if}
 
-    <!-- ticket cut-off line mark -->
-    <div class="ticket-cut-off"></div>
-
-    <!-- receipt barcode(receipt ID) -->
-    <div class="receipt-baracode">{checkoutInfo.orderId}</div>
-    <div class="barcode-id">{checkoutInfo.orderId}</div>
+    <!-- main ticket body -->
+    <div class="t-main-body">
+      <h5>order info</h5>
+      <div class="order-info">
+        <!-- customer name & email -->
+        <div>
+          <span>{checkoutInfo.fname} {checkoutInfo.lname}</span>
+          <span>{checkoutInfo.email}</span>
+        </div>
+        <!-- order method -->
+        <div>
+          <span>order type</span> <span>{checkoutInfo.orderMthd}</span>
+        </div>
+        <!-- order status -->
+        <div>
+          <span>status</span> 
+          {#if checkoutInfo.payStatus === 'paid'}
+            <!-- if already paid -->
+            <span style="color: #413fdfcf; letter-spacing: 1px;">{checkoutInfo.status}</span>
+          {:else}
+            <!-- just placed recently placed order(only transfer & cash option available for now) -->
+            {#if checkoutInfo.paymentMthd != 'card'}
+              <span style="color: var(--accent-warning); letter-spacing: 1px;">pending</span>
+            {:else}
+              <span style="color: #413fdfcf; letter-spacing: 1px;">preparing</span>
+            {/if}
+          {/if}
+        </div>
+        <!-- order id/invoice id -->
+        <div>
+          <span>order ID</span> <span>{checkoutInfo.orderId}</span>
+        </div>
+        <!-- date-time when order was placed -->
+        <div>
+          <span>date & time</span> <span>{orderDateTime().date} {orderDateTime().time}</span>
+        </div>
+      </div>
+  
+      <!-- payment method -->
+      <div class="payment-method">
+        <span>payment method</span> <span>{checkoutInfo.paymentMthd}</span>
+      </div>
+  
+      <!-- ordered items -->
+      <div class="ordered-items">
+        {#if checkoutInfo._id != undefined}
+          {#each checkoutInfo.orders as item}
+            <ItemList cartItem={item} showOnTicket={true} />
+          {/each}
+        {:else}
+          {#each $CartItemStore as item}
+            <ItemList cartItem={item} showOnTicket={true} />
+          {/each}
+        {/if}
+      </div>
+  
+      <div class="pay-details">
+        <!-- total items of food -->
+        <div>
+          <span>items</span> <span>{totItems}</span>
+        </div>
+        <div>
+          <span>quantities</span> <span>{totQty}</span>
+        </div>
+        <div>
+          <span>amount</span> <span style="font-weight: bold;">{formatCurrency(checkoutInfo.amount).currency}{formatCurrency(checkoutInfo.amount).price}</span>
+        </div>
+      </div>
+  
+      <!-- caveat(only if payment status is 'unpaid') -->
+      {#if checkoutInfo.payStatus === 'unpaid'}
+        <p class="caveat">
+          order status is noted <b>pending</b> until payment is confirmed. Thereafter, 
+          you will be notified by a phone call or an email.
+        </p>
+      {/if}
+  
+      <!-- ticket cut-off line mark -->
+      <div class="ticket-cut-off"></div>
+  
+      <!-- receipt barcode(receipt ID) -->
+      <div class="receipt-baracode">{checkoutInfo.orderId}</div>
+      <div class="barcode-id">{checkoutInfo.orderId}</div>
+    </div>
   </article>
 
   <footer class="ticket-footer">
     <small>Thanks for your patronage</small>
-    <small>powered by <b>AIM Consult</b></small>
+    <small>powered by <b>AIMs Consult</b></small>
   </footer>
 </section>
 
@@ -114,29 +170,6 @@
     gap: 0.5em;
     padding: 0.5em 0 0;
   }
-  .logo {
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-    padding: 0.5em;
-    border-radius: 50%;
-    background-color: var(--clr-sec);
-    color: var(--clr-white);
-    text-align: center;
-  }
-  .site-name {
-    display: grid;
-    line-height: 1;
-    text-align: start;
-    font-weight: bold;
-  }
-  .site-name span:nth-child(1) {
-    text-transform: capitalize;
-    color: var(--clr-text-sec);
-  }
-  .site-name span:nth-child(2) {
-    font-variant: all-small-caps;
-    color: var(--clr-site-sec);
-  }
   .firm-address {
     font-size: 13px;
     font-family: 'Andika';
@@ -149,6 +182,9 @@
     font-size: 11px;
     color: #aba7bb;
   }
+  .ticket-body {
+    position: relative;
+  }
   .ticket-body h5 {
     font-size: 14px;
     font-family: 'Andika';
@@ -157,6 +193,35 @@
     letter-spacing: 1px;
     padding: 0.2em 1em;
     color: #aba7bb;
+  }
+  .t-watermark-container {
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .watermark {
+    width: 150px;
+    height: 150px;
+    position: relative;
+  }
+  .watermark img {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    max-width: 100%;
+    object-position: center;
+    object-fit: contain;
+    filter: opacity(0.2);
+  }
+  .t-main-body {
+    position: relative;
+    z-index: 1;
   }
   .order-info {
     padding: 0 1em;
@@ -212,6 +277,10 @@
     text-transform: capitalize;
     letter-spacing: 1px;
     color: #7a7cd9;
+  }
+  .ordered-items {
+    padding: 0 1em;
+    border-bottom: 1px dashed #6f837345;
   }
   .pay-details {
     padding: 0.5em 1em;

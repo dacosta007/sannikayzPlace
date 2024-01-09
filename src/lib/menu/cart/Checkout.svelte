@@ -33,7 +33,7 @@
   const paymentMthdOpts = [
     { value: 'cash', label: 'cash', title: 'with cash' },
     { value: 'transfer', label: 'transfer', title: 'bank transfer' },
-    { value: 'card', label: 'card', title: 'credit card' }
+    // { value: 'card', label: 'card', title: 'credit card' }
   ];
 
   /* help generate random number for order ID */

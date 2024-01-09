@@ -6,7 +6,7 @@
 </script>
 
 <article class="success-receipt">
-  <OrderSuccess />
+  <OrderSuccess paymentMth={checkoutInfo?.paymentMth} />
 
   <Ticket {checkoutInfo} />
 </article>

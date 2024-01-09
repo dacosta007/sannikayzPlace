@@ -11,6 +11,8 @@
   export let btnLitePry = false;
   export let btnLiteSec = false;
   export let btnRounded = false;
+  export let showLoading = false;
+  export let loadingStatus = 'Please wait...'
 </script>
 
 <button 
@@ -29,10 +31,14 @@
   disabled={disableBtn} 
   on:click>
   <slot></slot>
+  {#if showLoading}
+    <i class="loading">{loadingStatus}</i>
+  {/if}
 </button>
 
 <style>
   .btn {
+    position: relative;
     outline: none;
     border: none;
     border-radius: 4px;
@@ -110,6 +116,22 @@
   .btn:disabled {
     opacity: 0.5 !important;
   }
+  .loading {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    background-color: var(--clr-sec);
+    color: var(--clr-white-sec);
+    animation: show-loading 0.5s cubic-bezier(0.73, -0.07, 0.83, 0.07);
+  }
 
   @media (max-width: 500px) {
     .btn {
@@ -120,6 +142,15 @@
   @keyframes click-btn {
     from {
       transform: scale(0.9);
+    }
+    to {
+      transform: scale(1);
+    }
+  }
+
+  @keyframes show-loading {
+    from {
+      transform: scale(0);
     }
     to {
       transform: scale(1);

@@ -102,9 +102,9 @@
 
 
 <svelte:head>
-  <title>Sannikayz Place</title>
-  <meta name="description" content="Sannikayz Place food restaurant, and delivery. Home to one of the tasty and delicious food in Lagos.">
-  <meta name="keywords" content="Sannikayz Place, Ile-Iyan, delicious food restaurant in Lagos">
+  <title>Sannikayz Place | Ilé-Ìyàn.ng</title>
+  <meta name="description" content="Sannikayz Place or Ilé-Ìyàn food restaurant, and delivery. Home to one of the tasty and delicious food in Lagos.">
+  <meta name="keywords" content="Sannikayz Place, Ile-Iyan, Restaurant, Restaurant in Lagos, Events & Catering, Event Catering">
 </svelte:head>
 
 <section class="menu-body">

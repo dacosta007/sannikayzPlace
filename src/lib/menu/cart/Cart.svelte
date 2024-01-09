@@ -1,5 +1,6 @@
 <script>
   import { fade } from 'svelte/transition';
+  import { CartItemStore } from '$stores/CartItemStore';
 
   import CartList from './CartList.svelte';
   import Checkout from './Checkout.svelte';
@@ -19,7 +20,7 @@
   }
 
   // switch to success/receipt section
-  function changeToSuccess(evt) {
+  async function changeToSuccess(evt) {
     checkoutInfo = evt.detail.completeOrder;
     activeMenu = evt.detail.to;
   }
@@ -80,7 +81,7 @@
 
   @media (max-width: 600px) and (max-height: 799px) {
     .cart-container {
-      height: 100dvh;
+      height: 100vh;
     }
   }
 </style>

@@ -1,4 +1,7 @@
 <script>
+  // import { page } from '$app/stores'
+
+  // console.log($page.url.pathname)
   let pageIndicator = 'home'
 
   const footerMenu = [

@@ -2,6 +2,8 @@
   import { CartItemStore } from "$stores/CartItemStore";
   import { CartStatuStore } from "$stores/CartStatuStore";
 
+  export let paymentMth = ''
+
   function closeCart() {
     // clear all items in cart
     $CartItemStore = [];
@@ -18,6 +20,12 @@
   <!-- message -->
   <h3>success</h3>
   <h2>order placed</h2>
+  <!-- only show if payment method isn't 'card' -->
+  {#if paymentMth != 'card'}
+    <p class="success-info">
+      Your order is placed successfully. Please check your <b>email</b> to <b>make payment</b>
+    </p>
+  {/if}
 </header>
 
 <style>
@@ -59,5 +67,10 @@
   }
   .success-msg h3 {
     line-height: 1;
+  }
+  .success-info {
+    text-align: center;
+    padding: 0 1em;
+    font-size: small;
   }
 </style>

@@ -6,6 +6,7 @@
   import { formatCurrency } from '$lib/utilities/formatMoney';
 
   import Button from '$lib/shared/Button.svelte';
+  import ItemList from './ItemList.svelte';
 
   export let checkoutInfo;
 
@@ -14,7 +15,10 @@
   let btnProp = {
     btnType: 'button',
     btnSec: true,
-    btnBlock: true
+    btnBlock: true,
+    disableBtn: false,
+    showLoading: false,
+    loadingStatus: 'Please wait!..'
   }
 
   // total price of items added to cart
@@ -22,8 +26,11 @@
     return acc + (item.price * item.qty)
   }, 0);
 
+  // total quantities added to cart
+  let totQty = $CartItemStore.reduce((acc, item) => acc + item.qty, 0);
+
   // total items added to cart
-  let totItems = $CartItemStore.reduce((acc, item) => acc + item.qty, 0);
+  let totItems = $CartItemStore.length;
 
   // holds delivery fee
   let deliveryFee = '';
@@ -35,18 +42,52 @@
     return amtToBePaid;
   }
 
+  // help save order data info into DB
+  async function saveOrder(obj) {
+    const sendReq = await fetch('/apis/checkout', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(obj)
+    });
+
+    const response = await sendReq.json();
+
+    return response;
+  }
+
   /* help make online payment */
   function makeOnlinePayment() {
     console.log('make online payment')
   }
 
   /* help complete order with transfer or cash */
-  function completeOrder() {
+  async function completeOrder() {
+    // disable btn & loading status
+    btnProp.disableBtn = true
+    btnProp.showLoading = true
+
     checkoutInfo.amount = totAmt;
     // only if there are any coupon/voucher
     if ($VoucherStore.length > 0) checkoutInfo.amount = checkVoucher(totAmt);
 
-    console.log('confirm on order')
+    /* format order data to be saved into DB */
+    checkoutInfo['orders'] = $CartItemStore;
+    checkoutInfo['status'] = checkoutInfo.paymentMthd != 'card' ? 'placed' : 'preparing';
+    checkoutInfo['payStatus'] = checkoutInfo.paymentMthd != 'card'? 'unpaid' : 'paid';
+    checkoutInfo['date'] = new Date();
+
+    /* save order */
+    const saveData = await saveOrder(checkoutInfo);
+    
+    // show error message if exist
+    if (saveData?.error) {
+      alert('🛑 Unable to process your order, please try again.');
+      // enable btn & hide loading status
+      btnProp.disableBtn = false;
+      btnProp.showLoading = false;
+      return
+    }
+
     dispatch('toSuccess', { to: 'success', completeOrder: checkoutInfo })
   }
 
@@ -88,12 +129,28 @@
         <div class="address">{checkoutInfo.address}</div>
       </div>
     {/if}
+
+    <!-- Items added into cart -->
+    <div class="items-in-cart">
+      <h4 class="title">items added</h4>
+      {#each $CartItemStore as item}
+        <ItemList cartItem={item} showOnTicket={false} />
+      {:else}
+        <p class="description"><b>No Item(s) added into cart!. Cart is empty</b></p>
+      {/each}
+    </div>
     
     <div class="amt-analysis">
       <!-- total item in cart -->
       <div class="analysis">
         <span>items</span> 
         <div>{totItems}</div>
+      </div>
+
+      <!-- total Qty added in cart -->
+      <div class="analysis">
+        <span>quantities</span>
+        <div>{totQty}</div>
       </div>
       
       <!-- total amount on items in cart -->
@@ -235,6 +292,15 @@
     font-size: 15px;
     color: #929592;
   }
+  .items-in-cart {
+    margin-bottom: 1.4em;
+  }
+  .items-in-cart > h4.title {
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-align: center;
+    margin-bottom: 5px;
+  }
   .amt-analysis {
     background-color: var(--clr-white-sec-lite);
     border-radius: 6px;
@@ -250,6 +316,7 @@
   .analysis > span:nth-child(1) {
     text-transform: capitalize;
     font-weight: bold;
+    color: #8d938c;
   }
   .analysis:last-of-type {
     font-size: large;
