@@ -438,7 +438,7 @@
     .food-preview {
       top: 0;
       width: 100%;
-      height: 100vh;
+      height: clamp(100dvh, 100dvh, 100svh);
       display: inherit;
       backdrop-filter: none;
     }

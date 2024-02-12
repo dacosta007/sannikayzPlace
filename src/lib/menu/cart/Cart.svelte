@@ -81,7 +81,7 @@
 
   @media (max-width: 600px) and (max-height: 799px) {
     .cart-container {
-      height: 100vh;
+      height: clamp(100dvh, 100dvh, 100svh);
     }
   }
 </style>

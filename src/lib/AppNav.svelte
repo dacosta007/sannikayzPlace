@@ -1,8 +1,19 @@
 <script>
+  import { page } from '$app/stores'
   import { CartItemStore } from "$stores/CartItemStore"
   import { CartStatuStore } from "$stores/CartStatuStore"
 
   export let showDropdown = false;
+
+  $: pageIndicator = $page.url.pathname === '/' ? 'home' : ($page.url.pathname).split('/')[1]
+  $: pageLinkUrl = $page.url.pathname
+
+  const navMenus = [
+    { title: "home", link: "/" },
+    { title: "orders", link: "/orders" },
+    { title: "favourites", link: "/favourites" },
+    { title: "contact", link: "/contact" }
+  ]
 
   function dropdownMenu() {
     showDropdown = !showDropdown;
@@ -40,15 +51,20 @@
 <nav class="navbar">
   <div class="nav-brand">
     <div>
-      <div class="logo">SP</div>
-      <div class="site-name"><span>Sannikayz</span> <span>Place</span></div>
+      <!-- <div class="logo">SP</div>
+      <div class="site-name"><span>Sannikayz</span> <span>Place</span></div> -->
+      <div class="logo">
+        <a href="/" title="home">
+          <img src="/Ile-Iyan_logo.png" alt="site_logo" width="100" height="auto">
+        </a>
+      </div>
     </div>
   </div>
 
   <div class="nav-menu">
     <!-- cart icon -->
     <div class="icon">
-      <i class="ti ti-bag" on:click={toggleCartItems} on:keypress={toggleCartItems}></i>
+      <i class="ti ti-bag" on:click={toggleCartItems} on:keypress={toggleCartItems} title="Cart Bag"></i>
       {#if $CartItemStore.length > 0}
         <span class="badge">{$CartItemStore.length}</span>
       {/if}
@@ -61,13 +77,14 @@
       </div>
       <!-- dropdown menu -->
       <div class="nav-dropdown" class:show-dropdown={showDropdown}>
-        <a href="/" class="hide-sm">home</a>
-        <a href="/orders" class="hide-sm">orders</a>
-        <a href="/favourites" class="hide-sm">favourites</a>
-        <a href="/contact" class="hide-sm">contact</a>
+        {#each navMenus as menu}
+          <a href="{menu.link}" class:active={pageIndicator === menu.title && pageLinkUrl === menu.link} class="hide-sm" title="{menu.title}">
+            {menu.title}
+          </a>
+        {/each}
         
         <!-- feedback -->
-        <div on:click|self="{feedbackFrm}" on:keypress="{feedbackFrm}">
+        <div on:click|self={feedbackFrm} on:keypress|self={feedbackFrm}>
           <i class="ti ti-comment-alt"></i> <span>feedback</span>
         </div>
       </div>
@@ -100,15 +117,10 @@
   }
 
   .logo {
-    text-transform: uppercase;
     letter-spacing: 1.5px;
-    padding: 0.5em;
-    border-radius: 50px;
-    background: var(--clr-sec);
-    color: var(--clr-white-sec);
   }
 
-  .site-name {
+  /* .site-name {
     display: grid;
     line-height: 0.9;
     font-weight: bold;
@@ -122,7 +134,7 @@
   .site-name span:nth-child(2) {
     font-variant: all-small-caps;
     color: var(--clr-site-sec);
-  }
+  } */
 
   .nav-menu {
     display: flex;
@@ -194,6 +206,10 @@
     text-decoration: none;
     color: inherit;
     transition: background-color 0.5s ease;
+  }
+
+  .nav-dropdown > a.active {
+    color: var(--clr-site-sec);
   }
 
   .nav-dropdown a:hover, .nav-dropdown div:hover {

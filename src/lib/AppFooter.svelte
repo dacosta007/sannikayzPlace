@@ -1,8 +1,8 @@
 <script>
-  // import { page } from '$app/stores'
+  import { page } from '$app/stores'
 
-  // console.log($page.url.pathname)
-  let pageIndicator = 'home'
+  $: pageIndicator = $page.url.pathname === '/' ? 'home' : ($page.url.pathname).split('/')[1]
+  $: pageLinkUrl = $page.url.pathname
 
   const footerMenu = [
     { title: 'home', link: '/', icon: 'lni lni-home'},
@@ -33,7 +33,7 @@
 <div class="footer-nav">
   {#each footerMenu as menu}
     <div>
-      <a href="{menu.link}" class:active={pageIndicator === menu.title}>
+      <a href="{menu.link}" class:active={pageIndicator === menu.title && pageLinkUrl === menu.link}>
         <i class="{menu.icon}" on:click={indicatePage} on:keypress={indicatePage} data-page="{menu.title}"></i> 
         <span on:click={indicatePage} on:keypress={indicatePage} data-page="{menu.title}">{menu.title}</span>
       </a>
@@ -61,7 +61,7 @@
   }
 
   .footer-nav a.active {
-    color: var(--accent-info);
+    color: var(--clr-site-sec);
   }
 
   .footer-nav a i {

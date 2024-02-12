@@ -211,9 +211,14 @@
   .item-category {
     font-family: Barlow, Andika;
     font-variant: petite-caps;
-    font-size: 16px;
+    font-size: 12px;
     letter-spacing: 1px;
     color: #7d7c9d;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+    text-overflow: ellipsis;
+    overflow: hidden;
   }
 
   .name {
